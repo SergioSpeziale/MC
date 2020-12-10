@@ -32,6 +32,7 @@ public class Board {
     	
     	int lineIndex = 0;
     	
+    	// Translating the String into an array of Spots
     	for(int y = 0 ; y < 16 ; y ++) {
     		for(int x = 0 ; x < 16 ; x ++) {
     			switch ( boardLine.charAt(lineIndex) ) {
@@ -76,6 +77,8 @@ public class Board {
 					break;
 				}
     			
+    			// For evaluation purposes, spots are classified as neutral, 
+    			// enemy or my own 
     			Piece piece = boxes[y][x].getPiece();    			
     			if(piece == null) {
     				neutralSpots.add(boxes[y][x]);
@@ -92,96 +95,24 @@ public class Board {
     	}    	
     }
     
-//    public Move scanBestMove(Piece.Color myColor) {
-//    	
-//    	Move killingMove = new Move(null,null,0);    	
-//    	
-//    	for(Spot ownSpot : mySpots) {
-//    		Piece myPiece = ownSpot.getPiece();
-//    		
-//    		switch (myColor) {
-//			case BLACK:
-//				ListIterator<Spot> listIterator = enemySpots.listIterator(enemySpots.size());
-//
-//		    	while (listIterator.hasPrevious()) {
-//		    		Spot enemy = listIterator.previous();
-//		    		if(myPiece.canMove(ownSpot.getX(), ownSpot.getY(), enemy) ) {   
-//		    			if(!isPathBlocked(ownSpot, enemy)) {
-//		    				int enemyScore = this.calculateScore(enemy);
-//		    				if(killingMove.getScore() == 0 || killingMove.getScore() < enemyScore) {
-//		    					killingMove = new Move(ownSpot, enemy, enemyScore);
-//		    				}
-//		    			}	    				    				
-//	    			}
-//		    	}
-//		    	break;
-//			case WHITE:
-//				for(Spot enemy : enemySpots) {
-//	    			if(myPiece.canMove(ownSpot.getX(), ownSpot.getY(), enemy)) {   
-//	    				if(!isPathBlocked(ownSpot, enemy)) {
-//	    					int enemyScore = this.calculateScore(enemy);
-//	    					if(killingMove.getScore() == 0 || killingMove.getScore() < enemyScore) {
-//		    					killingMove = new Move(ownSpot, enemy, enemyScore);
-//		    				} 
-//	    				}	    				   				
-//	    			}
-//	    		}
-//		    	break;
-//			}    		
-//    	}
-//    	
-//    	
-//    	
-//    	if(killingMove.getScore() > 0) {
-//    		return killingMove;
-//    	}else {    		   		
-//    		switch (myColor) {
-//			case BLACK:
-//				ListIterator<Spot> listIteratorMySpots = mySpots.listIterator(mySpots.size());
-//
-//		    	while (listIteratorMySpots.hasPrevious()) {
-//		    		Spot ownSpot = listIteratorMySpots.previous();
-//		    		Piece myPiece = ownSpot.getPiece();   
-//		    		ListIterator<Spot> listIterator = neutralSpots.listIterator(neutralSpots.size());
-//
-//    		    	while (listIterator.hasPrevious()) {
-//    		    		Spot neutral = listIterator.previous();
-//    		    		if(myPiece.canMove(ownSpot.getX(), ownSpot.getY(), neutral)) {
-//    		    			if(!isPathBlocked(ownSpot, neutral)) {
-//                				return new Move(ownSpot, neutral, 0);
-//    		    			}
-//            			}
-//    		    	}
-//		    	} 
-//		    	break;   				
-//			case WHITE:
-//				for(Spot ownSpot : mySpots) {
-//	        		Piece myPiece = ownSpot.getPiece();     
-//    				for(Spot neutral : neutralSpots) {
-//            			if(myPiece.canMove(ownSpot.getX(), ownSpot.getY(), neutral)) {
-//            				if(!isPathBlocked(ownSpot, neutral)) {
-//                				return new Move(ownSpot, neutral, 0);	
-//            				}
-//            			}
-//            		}
-//				}
-//		    	break;    				
-//        	}
-//    	}    	
-//    	return null;
-//    }
-    
 public Move scanBestMove(Piece.Color myColor) {
     	
     	Move killingMove = new Move(null,null,0);  
     	
+    	// First, enemy's spots are evaluated: the higher their score, the more valuable the move    	
     	switch (myColor) {
-		case WHITE:
+		case WHITE:			
 			for(Spot ownSpot : mySpots) {
 	    		Piece myPiece = ownSpot.getPiece();
 	    		for(Spot enemy : enemySpots) {
 	    			if(myPiece.canMove(ownSpot.getX(), ownSpot.getY(), enemy)) {   
 	    				if(!isPathBlocked(ownSpot, enemy)) {
+	    					
+	    					/* the score can be the value of the enemy piece, or the value of
+	    					   one of my pieces under that enemy's  sight.
+	    					   If there is a rook that can be taken, but an enemy pawn is threatening
+	    					   one of my kings, that pawn will be given 100 points, becoming my best move	    					
+	    					 */
 	    					int enemyScore = this.calculateScore(enemy);
 	    					if(killingMove.getScore() == 0 || killingMove.getScore() < enemyScore) {
 		    					killingMove = new Move(ownSpot, enemy, enemyScore);
@@ -193,6 +124,8 @@ public Move scanBestMove(Piece.Color myColor) {
 			break;
 			
 		case BLACK:
+			// black pieces need to see the board in a reverse way, so that the further spots
+			// are the first to be evaluated
 			ListIterator<Spot> reverseListMySpots = mySpots.listIterator(mySpots.size());
 
 	    	while (reverseListMySpots.hasPrevious()) {
@@ -216,7 +149,7 @@ public Move scanBestMove(Piece.Color myColor) {
 			break;		
 		}    	
     	
-    	
+    	// If killing moves where not found, then the neutral spots are evaluated
     	if(killingMove.getScore() > 0) {
     		return killingMove;
     	}else {    		   		

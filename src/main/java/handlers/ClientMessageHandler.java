@@ -61,15 +61,16 @@ public class ClientMessageHandler {
             	ObjectMapper mapper = new ObjectMapper();
             	try {
 					GetYourTurnResponse response = mapper.readValue(this.data.toString(), GetYourTurnResponse.class);
-					System.out.println("Jugada de mi oponente- movi nro: "+ response.moveLeft + " para "+ response.actualTurn);
-					
+					System.out.println("Movimientos pendientes: "+ response.moveLeft + ". Mi color: "+ response.actualTurn);
+					System.out.println("________________");
 					for(int i = 1; i < 257 ; i ++) {
 						System.out.print(response.board.charAt(i - 1));
 						if(i%16 == 0) {
 							System.out.println("");
 						}
 					}
-					
+					System.out.println("________________");
+
 					this.bot.makeMove(response);
             	} catch (JsonMappingException e) {
 					e.printStackTrace();

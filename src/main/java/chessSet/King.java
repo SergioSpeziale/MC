@@ -10,8 +10,6 @@ public class King extends Piece {
     @Override
     public boolean canMove(int startX, int startY, Spot end) 
     { 
-        // we can't move the piece to a Spot that  
-        // has a piece of the same color 
         if (end.getPiece() != null && end.getPiece().getColor() == this.getColor()) { 
             return false; 
         } 

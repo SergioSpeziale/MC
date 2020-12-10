@@ -75,7 +75,7 @@ public class PawnTests {
 	
 	@Test
 	void testBlackPawnCanMoveTwoSpots() {
-		Pawn pawn = this.givenAWhitePawn();
+		Pawn pawn = this.givenABlackPawn();
 		Spot start = new Spot(0, 3, pawn);
 		Spot end = new Spot(0, 5, null);
 		boolean isValid = pawn.canMove(start.getX(), start.getY(), end);

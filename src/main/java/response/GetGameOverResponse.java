@@ -13,7 +13,7 @@ public class GetGameOverResponse {
 	public String whiteUsername;
 	
 	@JsonProperty("black_username")
-	public String backUsername;
+	public String blackUsername;
 	
 	@JsonProperty("white_score")
 	public String whiteScore;

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -234,6 +235,42 @@ public class BoardTests {
 //		System.out.println("desde x:" + actual.getStart().getX() + " y:" + actual.getStart().getY() + " hasta x:" + actual.getEnd().getX() + " y:" + actual.getEnd().getY());
 		
 		assertEquals(expected, actualResult);
+	}
+	
+	@Test
+	void testScanBestMoveWrongDiagonal() {
+		String boardLine = 
+				"rrhhbbqqkkbbhhrr" +
+				"rrhhbbqqkkbbhhrr" +
+				"pppppppppppppppp" +
+				"ppppppppppppppp " +
+				"                " +
+				"    Q           " +
+				"                " +
+				"                " +
+				"                " +
+				"                " +
+				"                " +
+				"                " +
+				"PPPP PPPPPPPPPPP" +
+				"PPPPPPPPPPPPPP P" +
+				"RRHHBBQQKKBBHHRR" +
+				"RRHHBBQQKKBBHHRR";
+		Board board = new Board("mockID");
+		board.fillSpots(boardLine, Piece.Color.BLACK);
+		
+		Pawn myPawn = this.givenABlackPawn();
+		Queen enemyQueen = this.givenAWhiteQueen();
+		Spot start = new Spot(6,3, myPawn);
+		Spot end = new Spot(4,5, enemyQueen);
+		Move wrongMove = new Move(start, end, end.getPiece().getScore().getPieceVal());
+		Move actual = board.scanBestMove(myPawn.getColor());
+		String expected = "desde x:" + wrongMove.getStart().getX() + " y:" + wrongMove.getStart().getY() + " hasta x:" + wrongMove.getEnd().getX() + " y:" + wrongMove.getEnd().getY();
+		String actualResult = "desde x:" + actual.getStart().getX() + " y:" + actual.getStart().getY() + " hasta x:" + actual.getEnd().getX() + " y:" + actual.getEnd().getY();
+		System.out.println("desde x:" + start.getX() + " y:" + start.getY() + " hasta x:" + end.getX() + " y:" + end.getY());
+		System.out.println("desde x:" + actual.getStart().getX() + " y:" + actual.getStart().getY() + " hasta x:" + actual.getEnd().getX() + " y:" + actual.getEnd().getY());
+		
+		assertNotEquals(expected, actualResult);
 	}
 	
 	

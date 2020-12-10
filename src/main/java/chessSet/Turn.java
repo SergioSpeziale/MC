@@ -3,7 +3,6 @@ package chessSet;
 import java.util.HashMap;
 
 import chessSet.Piece.Color;
-import response.GetYourTurnResponse;
 
 public class Turn {
 	
@@ -25,7 +24,6 @@ public class Turn {
 		HashMap<String,Object> body = new HashMap<String,Object>();
 		
 		if(start.getPiece().canMove(start.getX(), start.getY(), end)) {
-			// rename 'body' -> 'body'
 			body.put("board_id", board.boardId);
 			body.put("turn_token", this.turnToken);
 			body.put("from_row", start.getY());

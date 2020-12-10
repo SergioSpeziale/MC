@@ -12,7 +12,7 @@ public class Pawn extends Piece{
 	
 	@Override
     public boolean canMove(int startX, int startY, Spot end) { 
-		// Verify board boundaries
+		
 		if (!this.isInsideBoard(end.getX(), end.getY())) {
 			return false;
 		}
@@ -27,6 +27,10 @@ public class Pawn extends Piece{
 	
 		if (this.isDiagonalMove(startX, startY, end.getX(), end.getY())) {
 			Piece piece = end.getPiece();
+			
+			if(countStraightSpots(startY, end.getY()) > 1) {
+				return false;
+			}
 			
 			if (piece != null) {
 				if (this.isPieceRivalOf(piece)) {
@@ -49,10 +53,12 @@ public class Pawn extends Piece{
 				if(startY != BLACK_PAWN_INITIAL_SPOT) {
 					return false;
 				}
+				break;
 			case WHITE:
 				if(startY != WHITE_PAWN_INITIAL_SPOT) {
 					return false;
 				}
+				break;
 			default:
 				break;
 			}			

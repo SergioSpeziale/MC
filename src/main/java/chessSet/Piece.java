@@ -25,7 +25,6 @@ public abstract class Piece {
 	static final int FIRST_INDEX = 0;
 	static final int LAST_INDEX = 15;
 	
-	private boolean killed = false; 
     private Color color;
     private Score score;
   
@@ -41,17 +40,7 @@ public abstract class Piece {
 
 	public void setColor(Color color) {
 		this.color = color;
-	}
-
-	public boolean isKilled() 
-    { 
-        return this.killed; 
-    } 
-  
-    public void setKilled(boolean killed) 
-    { 
-        this.killed = killed; 
-    }         
+	}       
 
 	public Score getScore() {
 		return score;
@@ -113,15 +102,4 @@ public abstract class Piece {
         int y = Math.abs(start - end);
         return y;
     }
-    
-//    protected boolean isVerticalBlocked(int startX, int startY, int endX, int endY) {
-//    	int horizontal = endX - startX;
-//    	int vertical = endY - startY;
-//    	if(horizontal != 0) {
-//    		
-//    		for(int x = 0 ; x != horizontal ; x = x + (horizontal/Math.abs(horizontal))) {
-//    			
-//    		}
-//    	}
-//    }
 }

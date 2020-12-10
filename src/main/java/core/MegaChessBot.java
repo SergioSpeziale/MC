@@ -1,8 +1,6 @@
 package core;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +62,6 @@ public class MegaChessBot extends TextWebSocketHandler{
 	@Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {        
         JsonObject json = Json.createReader(new StringReader(message.getPayload())).readObject();
-        System.out.println("Mensaje entrante: " + message.getPayload());
         this.msgHandler.handleMessage(json, this);
     }	
 	
@@ -107,8 +104,6 @@ public class MegaChessBot extends TextWebSocketHandler{
 	public void notifyChallenge(GetChallengeResponse challenge) {
 		
 		System.out.println("Acepto challenge de " + challenge.getUsername());	
-//		System.out.println("El jugador " + challenge.getUsername() + " lo desafía. ¿Acepta el juego? S/N");
-//		if(this.evaluateChallenge()) {
 		if(challenge.getUsername().equalsIgnoreCase("SergioHR")) {
 			ChallengeAcceptanceService challengeAcceptedService = new ChallengeAcceptanceService(this);	 
 			HashMap<String,String> body = new HashMap<String,String>();
@@ -131,49 +126,19 @@ public class MegaChessBot extends TextWebSocketHandler{
 	}
 	
 	public void showEndGameResults(GetGameOverResponse gameOver) {
-		System.out.println("Resultado final: \n" + gameOver );
-	}
-	
-	// End Actions
-	
-	private boolean evaluateChallenge() {		
-		String answer= "";
-		
-		while(!answer.equalsIgnoreCase("S") && !answer.equalsIgnoreCase("N")) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			try {
-				answer = reader.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return answer.equalsIgnoreCase("S");
+		System.out.println("Resultado final");
+		System.out.println("Piezas blancas: "+ gameOver.whiteUsername + " - Puntaje: " + gameOver.whiteScore);
+		System.out.println("Piezas negras: "+ gameOver.blackUsername + " - Puntaje: " + gameOver.blackScore);
 	}
 	
 	private void chooseOpponent(String[] usersList) {		
-		String answer= "";
-//		boolean selected = false;
-//		
-//		System.out.println("Seleccione oponente: ");
-//		while(!selected && !answer.equalsIgnoreCase("skip")) {
-//			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-//			try {
-//				answer = reader.readLine();				
-//				for( int i = 0 ; i < usersList.length ; i ++ ) {
-//					if( answer.equals(usersList[i]) ) selected = true;
-//				}
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		
+		String chosenOpponent= "SergioHR";
 		ChallengeOpponentService challengeOpponentService = new ChallengeOpponentService(this);	 
 		HashMap<String,String> body = new HashMap<String,String>();
-		answer = "SergioHR"; 
-		if(answer != "" && !answer.equalsIgnoreCase("skip")) {
+		
+		if(chosenOpponent != "") {
 			body.put("message", "¿Jugamos?");
-			body.put("username", answer);		
+			body.put("username", chosenOpponent);		
 			
 			challengeOpponentService.setBody(body);
 			challengeOpponentService.run();
