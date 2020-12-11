@@ -33,13 +33,14 @@ public class MegaChessBot extends TextWebSocketHandler {
 	private WebSocketSession clientSession;
 	private ClientMessageHandler msgHandler;
 	private int opponentsNumber;
+	private boolean enableOneToOne;
 
 	public MegaChessBot() {
 		super();
 
 		this.opponentsNumber = 0;
+		this.enableOneToOne = false;
 		StandardWebSocketClient webSocketClient = new StandardWebSocketClient();
-
 		this.msgHandler = new ClientMessageHandler();
 
 		try {
@@ -87,14 +88,14 @@ public class MegaChessBot extends TextWebSocketHandler {
 			}
 		}
 		System.out.println("Jugadores disponibles: " + players);
-		if (this.opponentsNumber == 0) {
+		if (this.opponentsNumber == 0 && this.enableOneToOne) {
 			this.chooseOpponent(usersList);
 		}
 	}
 
-	public void notifyChallenge(GetChallengeResponse challenge) {
-		System.out.println("Acepto challenge de " + challenge.getUsername());
-		if (challenge.getUsername().equalsIgnoreCase("SergioHR")) {
+	public void notifyChallenge(GetChallengeResponse challenge) {		
+		if (challenge.getUsername().equalsIgnoreCase("SergioHR") || !this.enableOneToOne) {
+			System.out.println("Acepto challenge de " + challenge.getUsername());
 			ChallengeAcceptanceService challengeAcceptedService = new ChallengeAcceptanceService(this);
 			HashMap<String, String> body = new HashMap<String, String>();
 			body.put("board_id", challenge.getBoardId());
